@@ -15,7 +15,7 @@ function App() {
   return (
 
     <div className="App">
-      
+      <h3>{data}</h3>
     </div>
   );
 }
