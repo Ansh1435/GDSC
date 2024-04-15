@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import streamlit as st
 import numpy as np
@@ -7,8 +7,9 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
 
 start = '2010-01-01'
@@ -17,6 +18,7 @@ model = load_model('stock_prediction.h5')
 
 @st.cache
 def run_streamlit(user_input):
+    # Your Streamlit app code here...
     df = yf.download(user_input, start=start, end=end)
 
     st.subheader('Data from 2010 - 2019')
@@ -76,12 +78,18 @@ def run_streamlit(user_input):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/predictions/<stock_ticker>')
 def get_predictions(stock_ticker):
     run_streamlit(stock_ticker)
     return 'Done'
 
+# Route to serve static assets from the React build folder
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory(os.path.join(app.static_folder, 'react'), path)
+
 if __name__ == '__main__':
     app.run(debug=True)
+

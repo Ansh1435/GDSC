@@ -6,7 +6,7 @@ function App() {
     fetchData();
   })
   const fetchData = async () =>{
-    try{const response = await fetch('http://localhost:5000/api/stock-data');
+    try{const response = await fetch('http://localhost:5000/predictions/<stock_ticker>');
     const data = await response.json();
     setData(data);}catch(error){
         console.log(error);
