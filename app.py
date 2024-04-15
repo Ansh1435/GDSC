@@ -4,8 +4,10 @@ import pandas as pd
 import yfinance as yf
 from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app,resorces={r"/api/*":{"origins":"*"}})
 
 start = '2010-01-01'
 end = '2019-12-31'
