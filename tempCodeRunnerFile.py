@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -8,9 +7,6 @@ from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 
 app = Flask(__name__)
-CORS(app, resources={r"/predict_stock/*": {"origins": "http://localhost:3000"}})
-
-
 
 start = '2010-01-01'
 end = '2019-12-31'
@@ -21,12 +17,10 @@ model = load_model('stock_prediction.h5')
 def home():
     return "Welcome to Stock Price Prediction API!"
 
-@app.route('/predict/<string:stock_ticker>', methods=['GET','POST'])
-def predict_stock(stock_ticker):
-    # Your code here
-
-    # Your prediction logic here
-
+@app.route('/predict_stock', methods=['POST'])
+def predict_stock():
+    data = request.get_json()
+    stock_ticker = data['stock_ticker']
     
     df = yf.download(stock_ticker, start=start, end=end)
     data_training = pd.DataFrame(df['Close'][0:int(len(df)*0.70)]) 
